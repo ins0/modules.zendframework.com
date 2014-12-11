@@ -10,16 +10,16 @@ use ZfModule\Mapper;
 class TotalModulesFactory implements FactoryInterface
 {
     /**
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param ServiceLocatorInterface $helperPluginManager
      * @return TotalModules
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ServiceLocatorInterface $helperPluginManager)
     {
-        /* @var HelperPluginManager $serviceLocator */
-        $sm = $serviceLocator->getServiceLocator();
+        /* @var HelperPluginManager $helperPluginManager */
+        $serviceManager = $helperPluginManager->getServiceLocator();
 
         /* @var Mapper\Module $moduleMapper */
-        $moduleMapper = $sm->get('zfmodule_mapper_module');
+        $moduleMapper = $serviceManager->get('zfmodule_mapper_module');
 
         return new TotalModules($moduleMapper);
     }
