@@ -8,12 +8,12 @@ use ZfModule\Mapper;
 
 class NewModule extends AbstractHelper
 {
-    /** @var Mapper\Module */
+    /**
+     * @var Mapper\Module
+     */
     private $moduleMapper;
 
     /**
-     * Constructor
-     *
      * @param Mapper\Module $moduleMapper
      */
     public function __construct(Mapper\Module $moduleMapper)

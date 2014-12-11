@@ -8,15 +8,17 @@ use ZfModule\Mapper;
 
 class ListModule extends AbstractHelper
 {
-    /** @var Mapper\Module */
+    /**
+     * @var Mapper\Module
+     */
     private $moduleMapper;
 
-    /** @var Client */
+    /**
+     * @var Client
+     */
     private $githubClient;
 
     /**
-     * Constructor
-     *
      * @param Mapper\Module $moduleMapper
      * @param Client $githubClient
      */
