@@ -42,12 +42,10 @@ class ListModule extends AbstractHelper
 
         //limit modules to only user modules
         if ($user) {
-            $repositories = $this->githubClient->api('current_user')->repos(
-                array(
-                    'type' =>'all',
-                    'per_page' => 100
-                )
-            );
+            $repositories = $this->githubClient->api('current_user')->repos([
+                'type' =>'all',
+                'per_page' => 100
+            ]);
 
             $modules = array();
             foreach ($repositories as $repository) {

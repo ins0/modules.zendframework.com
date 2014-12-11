@@ -25,6 +25,9 @@ class ListModuleFactory implements FactoryInterface
         /* @var Client $githubClient */
         $githubClient = $sm->get('EdpGithub\Client');
 
-        return new ListModule($moduleMapper, $githubClient);
+        return new ListModule(
+            $moduleMapper,
+            $githubClient
+        );
     }
 }
