@@ -9,50 +9,47 @@ use PHPUnit_Framework_TestCase;
 
 class RepositoryRetrieverTest extends PHPUnit_Framework_TestCase
 {
-    public $response;
-    public $headers;
-    public $httpClient;
-    public $client;
-
-    public function setUp()
+    private function getClientMock(Api\AbstractApi $apiInstance, $result)
     {
-        $this->response = $this->getMock('Zend\Http\Response');
-        $this->headers = $this->getMock('Zend\Http\Headers');
-        $this->httpClient = $this->getMock('EdpGithub\Http\Client');
-        $this->client = $this->getMock('EdpGithub\Client');
-    }
+        $headers = $this->getMock('Zend\Http\Headers');
 
-    public function getClientMock(Api\AbstractApi $apiInstance, $result)
-    {
-        $this->response->expects($this->any())
+        $response = $this->getMock('Zend\Http\Response');
+
+        $response
+            ->expects($this->any())
             ->method('getBody')
             ->will($this->returnValue($result));
 
-        $this->response->expects($this->any())
+        $response->expects($this->any())
             ->method('getHeaders')
-            ->will($this->returnValue($this->headers));
+            ->will($this->returnValue($headers));
 
-        $this->httpClient->expects($this->any())
+        $httpClient = $this->getMock('EdpGithub\Http\Client');
+
+        $httpClient
+            ->expects($this->any())
             ->method('get')
-            ->will($this->returnValue($this->response));
+            ->will($this->returnValue($response));
 
-        $this->client->expects($this->any())
+        $client = $this->getMock('EdpGithub\Client');
+
+        $client->expects($this->any())
             ->method('getHttpClient')
-            ->will($this->returnValue($this->httpClient));
+            ->will($this->returnValue($httpClient));
 
-        $apiInstance->setClient($this->client);
+        $apiInstance->setClient($client);
 
-        $this->client->expects($this->any())
+        $client
+            ->expects($this->any())
             ->method('api')
             ->will($this->returnValue($apiInstance));
 
-        return $this->client;
+        return $client;
     }
 
-    public function getRepositoryRetrieverInstance(Api\AbstractApi $apiInstance, $result)
+    private function getRepositoryRetrieverInstance(Api\AbstractApi $apiInstance, $result)
     {
-        $clientMock = $this->getClientMock($apiInstance, $result);
-        return new RepositoryRetriever($clientMock);
+        return new RepositoryRetriever($this->getClientMock($apiInstance, $result));
     }
 
     public function testCanRetrieveUserRepositories()
@@ -94,11 +91,14 @@ class RepositoryRetrieverTest extends PHPUnit_Framework_TestCase
 
     public function testErrorOnRetreiveUserRepositoryMetadata()
     {
-        $this->client->expects($this->once())
+        $client = $this->getMock('EdpGithub\Client');
+
+        $client
+            ->expects($this->once())
             ->method('api')
             ->willThrowException(new RuntimeException);
 
-        $instance = new RepositoryRetriever($this->client);
+        $instance = new RepositoryRetriever($client);
         $response = $instance->getUserRepositoryMetadata('foo', 'bar');
         $this->assertFalse($response);
     }
@@ -139,11 +139,14 @@ class RepositoryRetrieverTest extends PHPUnit_Framework_TestCase
 
     public function testErrorOnRetrieveRepositoryFileMetadata()
     {
-        $this->client->expects($this->once())
+        $client = $this->getMock('EdpGithub\Client');
+
+        $client
+            ->expects($this->once())
             ->method('api')
             ->willThrowException(new RuntimeException);
 
-        $instance = new RepositoryRetriever($this->client);
+        $instance = new RepositoryRetriever($client);
         $response = $instance->getRepositoryFileMetadata('foo', 'bar', 'baz');
         $this->assertFalse($response);
     }
