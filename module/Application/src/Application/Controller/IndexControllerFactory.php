@@ -5,7 +5,7 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\ControllerManager;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfModule\Mapper;
+use ZfModule\Service;
 
 class IndexControllerFactory implements FactoryInterface
 {
@@ -19,9 +19,9 @@ class IndexControllerFactory implements FactoryInterface
         /* @var ControllerManager $controllerManager */
         $serviceManager = $controllerManager->getServiceLocator();
 
-        /* @var Mapper\Module $moduleMapper */
-        $moduleMapper = $serviceManager->get(Mapper\Module::class);
+        /* @var Service\Module $moduleService */
+        $moduleService = $serviceManager->get(Service\Module::class);
 
-        return new IndexController($moduleMapper);
+        return new IndexController($moduleService);
     }
 }

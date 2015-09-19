@@ -4,25 +4,27 @@ namespace Application\Controller;
 
 use Zend\Feed\Writer\Feed;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Paginator;
 use Zend\View\Model\FeedModel;
 use Zend\View\Model\ViewModel;
-use ZfModule\Mapper;
+use ZfModule\Mapper\ModuleToFeed;
+use ZfModule\Service;
 
 class IndexController extends AbstractActionController
 {
     const MODULES_PER_PAGE = 15;
 
     /**
-     * @var Mapper\Module
+     * @var Service\Module
      */
-    private $moduleMapper;
+    private $moduleService;
 
     /**
-     * @param Mapper\Module $moduleMapper
+     * @param Service\Module $moduleService
      */
-    public function __construct(Mapper\Module $moduleMapper)
+    public function __construct(Service\Module $moduleService)
     {
-        $this->moduleMapper = $moduleMapper;
+        $this->moduleService = $moduleService;
     }
 
     /**
@@ -33,7 +35,7 @@ class IndexController extends AbstractActionController
         $query =  $this->params()->fromQuery('query', null);
         $page = (int) $this->params()->fromQuery('page', 1);
 
-        $repositories = $this->moduleMapper->pagination($page, self::MODULES_PER_PAGE, $query, 'created_at', 'DESC');
+        $repositories = $this->moduleService->findModules($query, ['m.created_at DESC'], $page, self::MODULES_PER_PAGE);
 
         return new ViewModel([
             'repositories' => $repositories,
@@ -57,10 +59,10 @@ class IndexController extends AbstractActionController
 
         // Get the recent modules
         $page = 1;
-        $modules = $this->moduleMapper->pagination($page, self::MODULES_PER_PAGE, null, 'created_at', 'DESC');
+        $modules = $this->moduleService->findModules(null, ['m.created_at DESC'], $page, self::MODULES_PER_PAGE);
 
         // Load them into the feed
-        $mapper = new Mapper\ModuleToFeed($feed, $url);
+        $mapper = new ModuleToFeed($feed, $url);
         $mapper->addModules($modules);
 
         // Render the feed

@@ -3,14 +3,14 @@
 namespace ZfModule\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
-use ZfModule\Mapper;
+use ZfModule\Service;
 
 class TotalModules extends AbstractHelper
 {
     /**
-     * @var Mapper\Module
+     * @var Service\Module
      */
-    private $moduleMapper;
+    private $moduleService;
 
     /**
      * @var int
@@ -18,11 +18,11 @@ class TotalModules extends AbstractHelper
     private $total;
 
     /**
-     * @param Mapper\Module $moduleMapper
+     * @param Service\Module $moduleService
      */
-    public function __construct(Mapper\Module $moduleMapper)
+    public function __construct(Service\Module $moduleService)
     {
-        $this->moduleMapper = $moduleMapper;
+        $this->moduleService = $moduleService;
     }
 
     /**
@@ -31,7 +31,7 @@ class TotalModules extends AbstractHelper
     public function __invoke()
     {
         if ($this->total === null) {
-            $this->total = $this->moduleMapper->getTotal();
+            $this->total = $this->moduleService->getTotalModuleCount();
         }
 
         return $this->total;

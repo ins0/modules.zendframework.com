@@ -4,28 +4,28 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use ZfModule\Mapper;
+use ZfModule\Service;
 
 class SearchController extends AbstractActionController
 {
     /**
-     * @var Mapper\Module
+     * @var Service\Module
      */
-    private $moduleMapper;
+    private $moduleService;
 
     /**
-     * @param Mapper\Module $moduleMapper
+     * @param Service\Module $moduleService
      */
-    public function __construct(Mapper\Module $moduleMapper)
+    public function __construct(Service\Module $moduleService)
     {
-        $this->moduleMapper = $moduleMapper;
+        $this->moduleService = $moduleService;
     }
 
     public function indexAction()
     {
         $query =  $this->params()->fromQuery('query', null);
 
-        $results = $this->moduleMapper->findByLike($query);
+        $results = $this->moduleService->findModules($query, ['m.name']);
 
         $viewModel = new ViewModel([
             'results' => $results,

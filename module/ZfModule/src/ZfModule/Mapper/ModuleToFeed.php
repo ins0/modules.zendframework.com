@@ -65,7 +65,7 @@ class ModuleToFeed
         $entry->setDescription($moduleDescription);
         $entry->setLink($this->urlPlugin->fromRoute('view-module', $urlParams, ['force_canonical' => true]));
         $entry->addAuthor(['name' => $module->getOwner()]);
-        $entry->setDateCreated($module->getCreatedAtDateTime());
+        $entry->setDateCreated($module->getCreatedAt());
 
         $this->feed->addEntry($entry);
 

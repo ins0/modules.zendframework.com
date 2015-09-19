@@ -2,10 +2,11 @@
 
 namespace ZfModule\View\Helper;
 
+use Doctrine\ORM\EntityManager;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\HelperPluginManager;
-use ZfModule\Mapper;
+use ZfModule\Service;
 
 class TotalModulesFactory implements FactoryInterface
 {
@@ -17,11 +18,11 @@ class TotalModulesFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $helperPluginManager)
     {
         /* @var HelperPluginManager $helperPluginManager */
-        $serviceManager = $helperPluginManager->getServiceLocator();
+        $serviceLocator = $helperPluginManager->getServiceLocator();
 
-        /* @var Mapper\Module $moduleMapper */
-        $moduleMapper = $serviceManager->get(Mapper\Module::class);
+        /* @var Module $moduleService */
+        $moduleService = $serviceLocator->get(Service\Module::class);
 
-        return new TotalModules($moduleMapper);
+        return new TotalModules($moduleService);
     }
 }

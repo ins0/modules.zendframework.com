@@ -29,7 +29,7 @@
                                     <strong><?php echo $this->escapeHtml($module->getIdentifier()); ?></strong>
                                 </a>
                             </p>
-                            <p><span class="zf-green">Created:</span> <?php echo $this->dateFormat($module->getCreatedAtDateTime(), IntlDateFormatter::SHORT, IntlDateFormatter::SHORT); ?></p>
+                            <p><span class="zf-green">Created:</span> <?php echo $this->dateFormat($module->getCreatedAt(), IntlDateFormatter::SHORT, IntlDateFormatter::SHORT); ?></p>
                         </div>
                         <div class="col-xs-4">
                             <a target="_blank" href="<?php echo $this->escapeHtmlAttr($module->getUrl()) ?>">Show module on GitHub</a>
@@ -55,6 +55,6 @@
                 </div>
             </div>
         </div>
-        <?php echo $this->newUsers(); ?>
+        <?php #echo $this->newUsers(); ?>
     </div>
 </div>
