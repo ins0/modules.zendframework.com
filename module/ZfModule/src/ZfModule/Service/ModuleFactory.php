@@ -2,10 +2,11 @@
 
 namespace ZfModule\Service;
 
+use Doctrine\ORM\EntityManager;
 use EdpGithub\Client;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZfModule\Mapper;
+use ZfModule\Entity;
 
 class ModuleFactory implements FactoryInterface
 {
@@ -16,12 +17,15 @@ class ModuleFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        /* @var Mapper\Module $moduleMapper */
-        $moduleMapper = $serviceLocator->get(Mapper\Module::class);
+        /* @var EntityManager $entityManager */
+        $entityManager = $serviceLocator->get(EntityManager::class);
+
+        /* @var Entity\Module $moduleRepository */
+        $moduleRepository = $entityManager->getRepository(Entity\Module::class);
 
         /* @var Client $githubClient */
         $githubClient = $serviceLocator->get('EdpGithub\Client');
 
-        return new Module($moduleMapper, $githubClient);
+        return new Module($moduleRepository, $githubClient);
     }
 }

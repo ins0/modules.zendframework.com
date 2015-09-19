@@ -2,21 +2,24 @@
 
 namespace ZfModule\Service;
 
+use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator;
+use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use EdpGithub\Client;
 use EdpGithub\Collection\RepositoryCollection;
 use EdpGithub\Http\Client as HttpClient;
 use stdClass;
 use Zend\Http;
+use Zend\Paginator;
 use ZfcBase\EventManager\EventProvider;
 use ZfModule\Entity;
-use ZfModule\Mapper;
+use ZfModule\Repository;
 
 class Module extends EventProvider
 {
     /**
-     * @var Mapper\Module
+     * @var Repository\Module
      */
-    private $moduleMapper;
+    private $moduleRepository;
 
     /**
      * @var Client
@@ -24,13 +27,59 @@ class Module extends EventProvider
     private $githubClient;
 
     /**
-     * @param Mapper\Module $moduleMapper
+     * @param Repository\Module $moduleRepository
      * @param Client $githubClient
      */
-    public function __construct(Mapper\Module $moduleMapper, Client $githubClient)
+    public function __construct(Repository\Module $moduleRepository, Client $githubClient)
     {
-        $this->moduleMapper = $moduleMapper;
+        $this->moduleRepository = $moduleRepository;
         $this->githubClient = $githubClient;
+    }
+
+    /**
+     * Return Total Modules
+     * @return int
+     */
+    public function getTotalModuleCount()
+    {
+        return $this->moduleRepository->countTotalModules()->getSingleScalarResult();
+    }
+
+    /**
+     * Get all Modules
+     *
+     * @param null $limit
+     * @param null $offset
+     * @return array
+     */
+    public function getModules($limit = null, $offset = null)
+    {
+        return $this->moduleRepository->findAll($limit, $offset)->getResult();
+    }
+
+    /**
+     * Find Modules
+     *
+     * @param $searchTerm
+     * @param $orderBy
+     * @param int $currentPage
+     * @param null $perPage
+     * @return array|Paginator\Paginator
+     */
+    public function findModules($searchTerm, $orderBy, $currentPage = 1, $perPage = null)
+    {
+        $modules = $this->moduleRepository->findModulesByName($searchTerm, $orderBy);
+
+        if ($perPage) {
+            $paginatorAdapter = new DoctrinePaginator(new ORMPaginator($modules));
+            $paginator = new Paginator\Paginator($paginatorAdapter);
+            $paginator->setItemCountPerPage($perPage);
+            $paginator->setCurrentPageNumber($currentPage);
+
+            return $paginator;
+        }
+
+        return $modules->getResult();
     }
 
     /**
