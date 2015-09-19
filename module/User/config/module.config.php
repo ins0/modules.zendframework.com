@@ -1,5 +1,7 @@
 <?php
 
+namespace User;
+
 use User\Controller;
 use User\GitHub;
 use User\Mapper;
@@ -35,6 +37,20 @@ return [
         ],
         'invokables' => [
             GitHub\LoginListener::class => GitHub\LoginListener::class,
+        ],
+    ],
+    'doctrine' => [
+        'driver' => [
+            'user_entities' => [
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' => 'array',
+                'paths' => [__DIR__ . '/../src/' . __NAMESPACE__ . '/Entity'],
+            ],
+            'orm_default' => [
+                'drivers' => [
+                    'User\Entity' => 'user_entities'
+                ]
+            ]
         ],
     ],
 ];

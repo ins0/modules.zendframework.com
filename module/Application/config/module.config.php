@@ -1,5 +1,7 @@
 <?php
 
+namespace Application;
+
 use Application\Controller;
 use Application\Service;
 use Application\View;
@@ -101,6 +103,20 @@ return [
         'factories' => [
             'gitHubRepositoryUrl' => View\Helper\GitHubRepositoryUrlFactory::class,
             'sanitizeHtml' => View\Helper\SanitizeHtmlFactory::class,
+        ],
+    ],
+    'doctrine' => [
+        'driver' => [
+            'application_entities' => [
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' => 'array',
+                'paths' => [__DIR__ . '/../src/' . __NAMESPACE__ . '/Entity'],
+            ],
+            'orm_default' => [
+                'drivers' => [
+                    'Application\Entity' => 'application_entities'
+                ]
+            ]
         ],
     ],
 ];

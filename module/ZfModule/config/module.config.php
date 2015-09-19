@@ -1,5 +1,7 @@
 <?php
 
+namespace ZfModule;
+
 use EdpGithub\Client;
 use ZfModule\Controller;
 use ZfModule\Delegators\EdpGithubClientAuthenticator;
@@ -113,6 +115,20 @@ return [
             Client::class => [
                 EdpGithubClientAuthenticator::class,
             ],
+        ],
+    ],
+    'doctrine' => [
+        'driver' => [
+            'zfmodule_entities' => [
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' => 'array',
+                'paths' => [__DIR__ . '/../src/' . __NAMESPACE__ . '/Entity'],
+            ],
+            'orm_default' => [
+                'drivers' => [
+                    'ZfModule\Entity' => 'zfmodule_entities'
+                ]
+            ]
         ],
     ],
 ];
